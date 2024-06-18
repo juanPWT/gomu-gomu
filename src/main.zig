@@ -1,5 +1,7 @@
 const std = @import("std");
 const service = @import("service.zig");
+const ansi = @import("ansi.zig");
+
 const print = std.debug.print;
 
 var TIME_LIMIT: u16 = 0;
@@ -15,6 +17,9 @@ const Command = struct {
     help: []const u8 = "help",
     quit: []const u8 = "quit",
 };
+
+const ansiReset = ansi.ANSI_RESET;
+const ansiColor = ansi.ansiColor();
 
 pub fn main() !void {
     // args
@@ -98,15 +103,15 @@ fn start(cmdPatern: Command) !void {
         if (elapsedTime >= TIME_LIMIT) {
             print(
                 \\   +----------------------------------------------+
-                \\          time       :  {}ms                   
-                \\          word total :  {}                        
+                \\          time       :  {s}{}ms{s}                   
+                \\          word total :  {s}{}/word{s}                        
                 \\   +______________________________________________+
-            , .{ TIME_LIMIT, wordTotal });
+            , .{ ansiColor.cyan, TIME_LIMIT, ansiReset, ansiColor.purple, wordTotal, ansiReset });
             break;
         }
 
-        print("run quit for exit!\n", .{});
-        print("try : {s}\n", .{randWord});
+        print("{s}run quit for exit!{s}\n", .{ ansiColor.yellow, ansiReset });
+        print("try : {s}{s}{s}\n", .{ ansiColor.cyan, randWord, ansiReset });
         print("your: ", .{});
         const meybeLine = try nextLine(stdin, &line);
 
@@ -117,16 +122,16 @@ fn start(cmdPatern: Command) !void {
         const input = std.mem.trim(u8, meybeLine.?, " \n");
 
         if (std.mem.eql(u8, input, cmdPatern.quit)) {
-            print("EXITING...", .{});
+            print("{s}EXITING...{s}", .{ ansiColor.yellow, ansiReset });
             break;
         }
 
         if (std.mem.eql(u8, randWord, input)) {
-            print("YES\n", .{});
+            print("{s}YES{s}\n", .{ ansiColor.green, ansiReset });
             wordTotal += 1;
             randWord = service.generateWord();
         } else {
-            print("!WRONG\n", .{});
+            print("{s}!WRONG{s}\n", .{ ansiColor.red, ansiReset });
         }
     }
 }
