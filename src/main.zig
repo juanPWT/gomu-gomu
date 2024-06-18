@@ -46,7 +46,7 @@ pub fn main() !void {
         // time mode
         if (cmdStartTime.len != 0) {
             if (std.mem.eql(u8, cmdStartTime, timeMode.easy)) {
-                TIME_LIMIT = TIME_LIMIT;
+                TIME_LIMIT = 60000;
             } else if (std.mem.eql(u8, cmdStartTime, timeMode.medium)) {
                 TIME_LIMIT = 30000;
             } else if (std.mem.eql(u8, cmdStartTime, timeMode.hard)) {
